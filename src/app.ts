@@ -1,5 +1,8 @@
 import 'reflect-metadata'
 import express from 'express'
+import { createConnection } from 'typeorm'
+
+import routes from './routes'
 
 class App {
   public express = express.application
@@ -7,12 +10,15 @@ class App {
   public constructor () {
     this.express = express()
     this.routes()
+    this.database()
   }
 
   private routes () {
-    this.express.get('/', (req, res) => {
-      return res.json({ msg: 'Hello!!' })
-    })
+    this.express.use(routes)
+  }
+
+  private async database () {
+    await createConnection().then(() => console.log('DB Connected!'))
   }
 }
 
