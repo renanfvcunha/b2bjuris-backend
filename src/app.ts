@@ -9,8 +9,15 @@ class App {
 
   public constructor () {
     this.express = express()
+    this.middlewares()
     this.routes()
-    this.database()
+    if (process.env.NODE_ENV !== 'test') {
+      this.database()
+    }
+  }
+
+  private middlewares () {
+    this.express.use(express.json())
   }
 
   private routes () {
