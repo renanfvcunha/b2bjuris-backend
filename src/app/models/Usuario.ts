@@ -26,6 +26,11 @@ export class Usuario {
   @Column({
     length: 50
   })
+  email?: string
+
+  @Column({
+    length: 50
+  })
   tipo_usuario?: string
 
   @Column({
