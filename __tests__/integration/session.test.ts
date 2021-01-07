@@ -17,10 +17,9 @@ beforeEach(async () => {
 
 describe('Authentication', () => {
   it('Should authenticate with valid credentials', async () => {
-    await request(app).post('/users').send({
+    await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
-      tipo_usuario: 'admin',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -34,10 +33,9 @@ describe('Authentication', () => {
   })
 
   it('Should be able to access private routes when autenticated', async () => {
-    await request(app).post('/users').send({
+    await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
-      tipo_usuario: 'admin',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -48,17 +46,16 @@ describe('Authentication', () => {
     })
 
     const response = await request(app)
-      .get('/test')
+      .get('/private')
       .set('Authorization', `Bearer ${user.body.token}`)
 
     expect(response.status).toBe(200)
   })
 
   it('Should not be able to access private routes when not autenticated', async () => {
-    await request(app).post('/users').send({
+    await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
-      tipo_usuario: 'admin',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -68,16 +65,15 @@ describe('Authentication', () => {
       senha: 'teste123'
     })
 
-    const response = await request(app).get('/test')
+    const response = await request(app).get('/private')
 
     expect(response.status).toBe(401)
   })
 
   it('Should not be able to access private routes with invalid token', async () => {
-    await request(app).post('/users').send({
+    await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
-      tipo_usuario: 'admin',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -88,28 +84,38 @@ describe('Authentication', () => {
     })
 
     const response = await request(app)
-      .get('/test')
+      .get('/private')
       .set('Authorization', `Bearer askdjsokjasokdjasokdj`)
 
     expect(response.status).toBe(401)
   })
 
   it('Should not be able to access admin routes', async () => {
-    await request(app).post('/users').send({
+    const admin = await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
-      tipo_usuario: 'usuario',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
 
+    await request(app)
+      .post('/users')
+      .send({
+        nome: 'José Francisco',
+        nome_usuario: 'chico',
+        tipo_usuario: 'usuario',
+        senha: 'teste123',
+        conf_senha: 'teste123'
+      })
+      .set('Authorization', `Bearer ${admin.body.token}`)
+
     const user = await request(app).post('/session').send({
-      nome_usuario: 'zeca',
+      nome_usuario: 'chico',
       senha: 'teste123'
     })
 
     const response = await request(app)
-      .get('/test')
+      .get('/adminprivate')
       .set('Authorization', `Bearer ${user.body.token}`)
 
     expect(response.status).toBe(401)
