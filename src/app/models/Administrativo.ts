@@ -6,7 +6,12 @@ import { Processo } from './Processo'
   name: 'administrativos'
 })
 export class Administrativo {
-  @OneToOne(() => Processo, { primary: true })
+  @OneToOne(() => Processo, {
+    primary: true,
+    cascade: ['insert'],
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({
     name: 'id_processo'
   })
@@ -29,7 +34,8 @@ export class Administrativo {
   numero?: number
 
   @Column({
-    length: 100
+    length: 100,
+    nullable: true
   })
   complemento?: string
 
@@ -53,6 +59,6 @@ export class Administrativo {
   })
   telefone?: string
 
-  @Column('text')
+  @Column('text', { nullable: true })
   observacoes?: string
 }

@@ -1,15 +1,13 @@
 import { createConnection, getConnection } from 'typeorm'
 
-import { Usuario } from './src/app/models/Usuario'
-
 const connection = {
   async create () {
     await createConnection({
       type: 'sqlite',
       database: './__tests__/db.sqlite',
-      entities: [Usuario],
+      entities: ['src/app/models/**/*.ts'],
       synchronize: true,
-      logging: 'all'
+      logging: false
     })
   },
 

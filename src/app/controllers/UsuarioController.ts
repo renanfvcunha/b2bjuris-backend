@@ -3,19 +3,19 @@ import { getRepository } from 'typeorm'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
+import IUsuario from '../interfaces/IUsuario'
 import { Usuario } from '../models/Usuario'
 import authConfig from '../../config/auth'
 
-interface IUser {
-  nome: string
-  nome_usuario: string
-  tipo_usuario: string
-  senha: string
-}
-
 class UsuarioController {
   public async store (req: Request, res: Response) {
-    const { nome, nome_usuario, tipo_usuario, senha }: IUser = req.body
+    const {
+      nome,
+      nome_usuario,
+      email,
+      tipo_usuario,
+      senha
+    }: IUsuario = req.body
 
     try {
       // Verificando se não há usuário com mesmo username
@@ -36,6 +36,7 @@ class UsuarioController {
       const usuario = new Usuario()
       usuario.nome = nome
       usuario.nome_usuario = nome_usuario
+      usuario.email = email
       usuario.tipo_usuario = tipo_usuario
       usuario.senha = hash_senha
 
@@ -51,7 +52,7 @@ class UsuarioController {
   }
 
   public async storeFirstUser (req: Request, res: Response) {
-    const { nome, nome_usuario, senha }: IUser = req.body
+    const { nome, nome_usuario, email, senha }: IUsuario = req.body
 
     try {
       // Verificando se não há usuários cadastrados
@@ -67,13 +68,14 @@ class UsuarioController {
       const hash_senha = await bcrypt.hash(senha, 8)
 
       // Adicionando usuário
-      const user = new Usuario()
-      user.nome = nome
-      user.nome_usuario = nome_usuario
-      user.tipo_usuario = 'admin'
-      user.senha = hash_senha
+      const usuario = new Usuario()
+      usuario.nome = nome
+      usuario.nome_usuario = nome_usuario
+      usuario.email = email
+      usuario.tipo_usuario = 'admin'
+      usuario.senha = hash_senha
 
-      const newUser = await getRepository(Usuario).save(user)
+      const newUser = await getRepository(Usuario).save(usuario)
 
       const { id, tipo_usuario } = newUser
 

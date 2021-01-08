@@ -40,7 +40,7 @@ export class Processo {
   })
   status?: Status
 
-  @Column()
+  @Column({ unique: true })
   numero_processo?: number
 
   @Column({

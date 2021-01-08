@@ -7,7 +7,12 @@ import { Secretaria } from './Secretaria'
   name: 'oficios'
 })
 export class Oficio {
-  @OneToOne(() => Processo, { primary: true })
+  @OneToOne(() => Processo, {
+    primary: true,
+    cascade: ['insert'],
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({
     name: 'id_processo'
   })

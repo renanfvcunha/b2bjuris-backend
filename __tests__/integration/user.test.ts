@@ -20,6 +20,7 @@ describe('User', () => {
     const response = await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -31,6 +32,7 @@ describe('User', () => {
     await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -38,6 +40,7 @@ describe('User', () => {
     const response = await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -49,15 +52,17 @@ describe('User', () => {
     const admin = await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
 
     const response = await request(app)
-      .post('/users')
+      .post('/usuarios')
       .send({
         nome: 'José Francisco',
         nome_usuario: 'chico',
+        email: 'chico@hotmail.com',
         tipo_usuario: 'usuario',
         senha: 'teste123',
         conf_senha: 'teste123'
@@ -71,15 +76,17 @@ describe('User', () => {
     const admin = await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
 
     const response = await request(app)
-      .post('/users')
+      .post('/usuarios')
       .send({
         nome: 'José Carlos',
         nome_usuario: 'zeca',
+        email: 'zeca@gmail.com',
         tipo_usuario: 'admin',
         senha: 'teste123',
         conf_senha: 'teste123'

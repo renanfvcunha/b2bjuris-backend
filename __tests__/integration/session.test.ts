@@ -20,6 +20,7 @@ describe('Authentication', () => {
     await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -36,6 +37,7 @@ describe('Authentication', () => {
     await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -56,6 +58,7 @@ describe('Authentication', () => {
     await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -74,6 +77,7 @@ describe('Authentication', () => {
     await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -94,6 +98,7 @@ describe('Authentication', () => {
     const admin = await request(app).post('/storefirstuser').send({
       nome: 'José Carlos',
       nome_usuario: 'zeca',
+      email: 'zeca@gmail.com',
       senha: 'teste123',
       conf_senha: 'teste123'
     })
@@ -103,6 +108,7 @@ describe('Authentication', () => {
       .send({
         nome: 'José Francisco',
         nome_usuario: 'chico',
+        email: 'chico@hotmail.com',
         tipo_usuario: 'usuario',
         senha: 'teste123',
         conf_senha: 'teste123'

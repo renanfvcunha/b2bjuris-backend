@@ -1,25 +1,25 @@
 import { Request, Response, NextFunction } from 'express'
-
-interface IUser {
-  nome?: string
-  nome_usuario?: string
-  tipo_usuario?: string
-  senha?: string
-  conf_senha?: string
-}
-
+import IUsuario from '../interfaces/IUsuario'
 class UsuarioValidator {
   public store (req: Request, res: Response, next: NextFunction) {
     const {
       nome,
       nome_usuario,
+      email,
       tipo_usuario,
       senha,
       conf_senha
-    }: IUser = req.body
+    }: IUsuario = req.body
 
     // Verificando se todos os campos estão preenchidos
-    if (!nome || !nome_usuario || !tipo_usuario || !senha || !conf_senha) {
+    if (
+      !nome ||
+      !nome_usuario ||
+      !email ||
+      !tipo_usuario ||
+      !senha ||
+      !conf_senha
+    ) {
       return res.status(400).json({
         msg: 'Verifique se todos os campos estão preenchidos corretamente!'
       })
@@ -43,10 +43,10 @@ class UsuarioValidator {
   }
 
   public storeFirstUser (req: Request, res: Response, next: NextFunction) {
-    const { nome, nome_usuario, senha, conf_senha }: IUser = req.body
+    const { nome, nome_usuario, email, senha, conf_senha }: IUsuario = req.body
 
     // Verificando se todos os campos estão preenchidos
-    if (!nome || !nome_usuario || !senha || !conf_senha) {
+    if (!nome || !nome_usuario || !email || !senha || !conf_senha) {
       return res.status(400).json({
         msg: 'Verifique se todos os campos estão preenchidos corretamente!'
       })
