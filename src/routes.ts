@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import uploadDocs from './config/uploadDocs'
 
 import UsuarioValidator from './app/validators/UsuarioValidator'
 
@@ -8,6 +9,7 @@ import isAdminMiddleware from './app/middlewares/isAdmin'
 import UsuarioController from './app/controllers/UsuarioController'
 import SessionController from './app/controllers/SessionController'
 import ProcessoController from './app/controllers/ProcessoController'
+import AssuntoController from './app/controllers/AssuntoController'
 
 const routes = Router()
 
@@ -20,20 +22,14 @@ routes.post(
   UsuarioController.storeFirstUser
 )
 
-routes.get('/private', authMiddleware, (req, res) =>
-  res.json({ msg: 'Rota Privada' })
-)
-
-routes.get('/adminprivate', authMiddleware, isAdminMiddleware, (req, res) =>
-  res.json({ msg: 'Rota Privada para o Admin' })
-)
-
 routes.use(authMiddleware)
 
-routes.post('/processos', ProcessoController.store)
+routes.post('/processos', uploadDocs, ProcessoController.store)
 
 routes.use(isAdminMiddleware)
 
 routes.post('/usuarios', UsuarioValidator.store, UsuarioController.store)
+
+routes.post('/assunto', AssuntoController.store)
 
 export default routes
