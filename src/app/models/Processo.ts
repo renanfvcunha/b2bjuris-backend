@@ -54,7 +54,9 @@ export class Processo {
   })
   tipo_processo?: string
 
-  @OneToMany(type => Arquivo, arquivo => arquivo.processo)
+  @OneToMany(type => Arquivo, arquivo => arquivo.processo, {
+    cascade: ['insert']
+  })
   arquivo?: Arquivo[]
 
   @CreateDateColumn()

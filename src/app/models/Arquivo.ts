@@ -17,16 +17,15 @@ export class Arquivo {
 
   @ManyToOne(type => Processo, processo => processo.arquivo, {
     onUpdate: 'CASCADE',
-    onDelete: 'SET NULL',
-    nullable: true
+    onDelete: 'CASCADE'
   })
   @JoinColumn({
-    name: 'id_assunto'
+    name: 'id_processo'
   })
   processo?: Processo
 
   @Column({
     length: 150
   })
-  assunto?: string
+  nome?: string
 }
