@@ -24,9 +24,14 @@ const multerConfig = multer({
     }
   }),
   fileFilter: (req, file, cb) => {
-    const isAccepted = ['application/pdf', 'application/msword'].find(
-      acceptedFormat => acceptedFormat === file.mimetype
-    )
+    const isAccepted = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+      'application/vnd.ms-word.document.macroEnabled.12',
+      'application/vnd.ms-word.template.macroEnabled.12'
+    ].find(acceptedFormat => acceptedFormat === file.mimetype)
 
     if (!isAccepted) {
       return cb(new Error('fileTypeMismatch'))

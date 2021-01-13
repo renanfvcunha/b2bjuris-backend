@@ -33,8 +33,6 @@ class ProcessoController {
         })
       }
 
-      console.log(docNames)
-
       const processo = new Processo()
       processo.numero_processo = numero_processo
       processo.nome_parte = nome_parte

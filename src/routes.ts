@@ -10,6 +10,7 @@ import UsuarioController from './app/controllers/UsuarioController'
 import SessionController from './app/controllers/SessionController'
 import ProcessoController from './app/controllers/ProcessoController'
 import AssuntoController from './app/controllers/AssuntoController'
+import ProcessoValidator from './app/validators/ProcessoValidator'
 
 const routes = Router()
 
@@ -24,7 +25,12 @@ routes.post(
 
 routes.use(authMiddleware)
 
-routes.post('/processos', uploadDocs, ProcessoController.store)
+routes.post(
+  '/processos',
+  uploadDocs,
+  ProcessoValidator.store,
+  ProcessoController.store
+)
 
 routes.use(isAdminMiddleware)
 
