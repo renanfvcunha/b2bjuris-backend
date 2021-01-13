@@ -34,6 +34,7 @@ routes.post(
 
 routes.use(isAdminMiddleware)
 
+routes.get('/usuarios', UsuarioController.index)
 routes.post('/usuarios', UsuarioValidator.store, UsuarioController.store)
 
 routes.post('/assunto', AssuntoController.store)

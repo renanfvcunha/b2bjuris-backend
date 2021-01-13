@@ -8,6 +8,79 @@ import { Usuario } from '../models/Usuario'
 import authConfig from '../../config/auth'
 
 class UsuarioController {
+  public async index (req: Request, res: Response) {
+    const { per_page, page, search } = req.query
+
+    try {
+      if (page) {
+        // Buscando total de registros
+        let total: number
+        const totalCount = await getRepository(Usuario).count()
+        const totalFiltered = await getRepository(Usuario)
+          .createQueryBuilder()
+          .select()
+          .where('nome like :nome', { nome: '%' + search + '%' })
+          .orWhere('nome_usuario like :nome_usuario', {
+            nome_usuario: '%' + search + '%'
+          })
+          .getCount()
+
+        // Verificando se registro será ou não filtrado
+        let users: Usuario[] = []
+        if (search) {
+          users = await getRepository(Usuario)
+            .createQueryBuilder('user')
+            .select([
+              'user.id',
+              'user.nome',
+              'user.nome_usuario',
+              'user.email',
+              'user.tipo_usuario'
+            ])
+            .where('nome like :nome', { nome: '%' + search + '%' })
+            .orWhere('nome_usuario like :nome_usuario', {
+              nome_usuario: '%' + search + '%'
+            })
+            .take(Number(per_page))
+            .skip((Number(page) - 1) * Number(per_page))
+            .orderBy('user.id', 'DESC')
+            .getMany()
+
+          total = totalFiltered
+        } else {
+          users = await getRepository(Usuario)
+            .createQueryBuilder('user')
+            .select([
+              'user.id',
+              'user.nome',
+              'user.nome_usuario',
+              'user.email',
+              'user.tipo_usuario'
+            ])
+            .take(Number(per_page))
+            .skip((Number(page) - 1) * Number(per_page))
+            .orderBy('user.id', 'DESC')
+            .getMany()
+
+          total = totalCount
+        }
+
+        return res.json({ users, total, page: Number(page) })
+      } else {
+        const users = await getRepository(Usuario).find({
+          select: ['id', 'nome', 'nome_usuario', 'email', 'tipo_usuario']
+        })
+
+        return res.json(users)
+      }
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
   public async store (req: Request, res: Response) {
     const {
       nome,
