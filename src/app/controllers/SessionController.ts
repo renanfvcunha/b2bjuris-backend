@@ -4,25 +4,20 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 import { Usuario } from '../models/Usuario'
+import ISession from '../interfaces/ISession'
 import authConfig from '../../config/auth'
-
-interface Session {
-  nome_usuario: string
-  senha: string
-  lembrar: boolean
-}
 
 class SessionController {
   public async store (req: Request, res: Response) {
     try {
-      const { nome_usuario, senha, lembrar }: Session = req.body
+      const { nome_usuario, senha, lembrar }: ISession = req.body
 
       let expireToken: string
 
       if (lembrar) {
         expireToken = '7d'
       } else {
-        expireToken = '2m'
+        expireToken = '12h'
       }
 
       // Buscando usuário no banco

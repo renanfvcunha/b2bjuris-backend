@@ -165,6 +165,21 @@ class UsuarioController {
       })
     }
   }
+
+  public async destroy (req: Request, res: Response) {
+    const { id } = req.params
+
+    try {
+      await getRepository(Usuario).delete(id)
+
+      return res.json({ msg: 'Usuário removido com sucesso!' })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
 }
 
 export default new UsuarioController()

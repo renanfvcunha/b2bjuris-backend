@@ -36,6 +36,7 @@ routes.use(isAdminMiddleware)
 
 routes.get('/usuarios', UsuarioController.index)
 routes.post('/usuarios', UsuarioValidator.store, UsuarioController.store)
+routes.delete('/usuarios/:id', UsuarioController.destroy)
 
 routes.post('/assunto', AssuntoController.store)
 
