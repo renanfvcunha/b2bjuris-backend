@@ -1,3 +1,3 @@
 export default interface IAssunto {
-  assunto?: string
+  nome_assunto?: string
 }

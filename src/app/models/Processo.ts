@@ -31,6 +31,7 @@ export class Processo {
   assunto?: Assunto
 
   @ManyToOne(type => Status, status => status.processo, {
+    cascade: ['insert'],
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
     nullable: true

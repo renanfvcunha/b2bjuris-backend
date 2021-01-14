@@ -3,4 +3,5 @@ export default interface IProcesso {
   nome_parte?: string
   tipo_processo?: string
   assunto?: number
+  status?: number
 }

@@ -20,14 +20,14 @@ class ProcessoController {
 
     try {
       if (page) {
-        let processos: Processo[] = []
+        let processosQuery: Processo[] = []
         let total: number
 
         // Verificando se registro será ou não filtrado
         if (search) {
-          processos = await getRepository(Processo)
-            .createQueryBuilder()
-            .select()
+          processosQuery = await getRepository(Processo)
+            .createQueryBuilder('processo')
+            .leftJoinAndSelect('processo.status', 'status')
             .where('numero_processo like :numero_processo', {
               numero_processo: '%' + search + '%'
             })
@@ -39,7 +39,7 @@ class ProcessoController {
             })
             .take(Number(per_page))
             .skip((Number(page) - 1) * Number(per_page))
-            .orderBy('id', 'DESC')
+            .orderBy('processo.id', 'DESC')
             .getMany()
 
           total = await getRepository(Processo)
@@ -56,20 +56,32 @@ class ProcessoController {
             })
             .getCount()
         } else {
-          processos = await getRepository(Processo)
-            .createQueryBuilder()
-            .select()
+          processosQuery = await getRepository(Processo)
+            .createQueryBuilder('processo')
+            .leftJoinAndSelect('processo.status', 'status')
             .take(Number(per_page))
             .skip((Number(page) - 1) * Number(per_page))
-            .orderBy('id', 'DESC')
+            .orderBy('processo.id', 'DESC')
             .getMany()
 
           total = await getRepository(Processo).count()
         }
 
+        const processos = processosQuery.map(processo => ({
+          ...processo,
+          status: processo.status?.status || null
+        }))
+
         return res.json({ processos, total, page: Number(page) })
       } else {
-        const processos = await getRepository(Processo).find()
+        const processosQuery = await getRepository(Processo).find({
+          relations: ['status']
+        })
+
+        const processos = processosQuery.map(processo => ({
+          ...processo,
+          status: processo.status?.status
+        }))
 
         return res.json(processos)
       }
@@ -87,7 +99,8 @@ class ProcessoController {
         numero_processo,
         nome_parte,
         tipo_processo,
-        assunto
+        assunto,
+        status
       }: IProcesso = req.body
       const docs: any = req.files
 
@@ -105,6 +118,7 @@ class ProcessoController {
       processo.tipo_processo = tipo_processo
       processo.assunto = { id: assunto }
       processo.arquivo = docNames
+      processo.status = { id: status }
 
       await getRepository(Processo).save(processo)
 

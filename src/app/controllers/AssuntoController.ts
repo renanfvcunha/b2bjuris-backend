@@ -7,12 +7,12 @@ import { Assunto } from '../models/Assunto'
 class AssuntoController {
   public async store (req: Request, res: Response) {
     try {
-      const { assunto }: IAssunto = req.body
+      const { nome_assunto }: IAssunto = req.body
 
-      const asst = new Assunto()
-      asst.assunto = assunto
+      const assunto = new Assunto()
+      assunto.assunto = nome_assunto
 
-      await getRepository(Assunto).save(asst)
+      await getRepository(Assunto).save(assunto)
 
       return res.json({ msg: 'Assunto cadastrado com sucesso!' })
     } catch (err) {
