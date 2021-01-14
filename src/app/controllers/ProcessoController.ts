@@ -15,6 +15,72 @@ interface IArquivo {
 }
 
 class ProcessoController {
+  public async index (req: Request, res: Response) {
+    const { page, per_page, search } = req.query
+
+    try {
+      if (page) {
+        let processos: Processo[] = []
+        let total: number
+
+        // Verificando se registro será ou não filtrado
+        if (search) {
+          processos = await getRepository(Processo)
+            .createQueryBuilder()
+            .select()
+            .where('numero_processo like :numero_processo', {
+              numero_processo: '%' + search + '%'
+            })
+            .orWhere('nome_parte like :nome_parte', {
+              nome_parte: '%' + search + '%'
+            })
+            .orWhere('tipo_processo like :tipo_processo', {
+              tipo_processo: '%' + search + '%'
+            })
+            .take(Number(per_page))
+            .skip((Number(page) - 1) * Number(per_page))
+            .orderBy('id', 'DESC')
+            .getMany()
+
+          total = await getRepository(Processo)
+            .createQueryBuilder()
+            .select()
+            .where('numero_processo like :numero_processo', {
+              numero_processo: '%' + search + '%'
+            })
+            .orWhere('nome_parte like :nome_parte', {
+              nome_parte: '%' + search + '%'
+            })
+            .orWhere('tipo_processo like :tipo_processo', {
+              tipo_processo: '%' + search + '%'
+            })
+            .getCount()
+        } else {
+          processos = await getRepository(Processo)
+            .createQueryBuilder()
+            .select()
+            .take(Number(per_page))
+            .skip((Number(page) - 1) * Number(per_page))
+            .orderBy('id', 'DESC')
+            .getMany()
+
+          total = await getRepository(Processo).count()
+        }
+
+        return res.json({ processos, total, page: Number(page) })
+      } else {
+        const processos = await getRepository(Processo).find()
+
+        return res.json(processos)
+      }
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
   public async store (req: Request, res: Response) {
     try {
       const {

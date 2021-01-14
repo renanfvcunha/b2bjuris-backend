@@ -13,20 +13,10 @@ class UsuarioController {
 
     try {
       if (page) {
-        // Buscando total de registros
+        let users: Usuario[] = []
         let total: number
-        const totalCount = await getRepository(Usuario).count()
-        const totalFiltered = await getRepository(Usuario)
-          .createQueryBuilder()
-          .select()
-          .where('nome like :nome', { nome: '%' + search + '%' })
-          .orWhere('nome_usuario like :nome_usuario', {
-            nome_usuario: '%' + search + '%'
-          })
-          .getCount()
 
         // Verificando se registro será ou não filtrado
-        let users: Usuario[] = []
         if (search) {
           users = await getRepository(Usuario)
             .createQueryBuilder('user')
@@ -46,7 +36,14 @@ class UsuarioController {
             .orderBy('user.id', 'DESC')
             .getMany()
 
-          total = totalFiltered
+          total = await getRepository(Usuario)
+            .createQueryBuilder()
+            .select()
+            .where('nome like :nome', { nome: '%' + search + '%' })
+            .orWhere('nome_usuario like :nome_usuario', {
+              nome_usuario: '%' + search + '%'
+            })
+            .getCount()
         } else {
           users = await getRepository(Usuario)
             .createQueryBuilder('user')
@@ -62,7 +59,7 @@ class UsuarioController {
             .orderBy('user.id', 'DESC')
             .getMany()
 
-          total = totalCount
+          total = await getRepository(Usuario).count()
         }
 
         return res.json({ users, total, page: Number(page) })

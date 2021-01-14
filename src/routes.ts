@@ -14,7 +14,7 @@ import ProcessoValidator from './app/validators/ProcessoValidator'
 
 const routes = Router()
 
-routes.get('/', (req, res) => res.json({ msg: 'SysProcuradoria API' }))
+routes.get('/', (req, res) => res.json({ msg: 'B2B Juris API' }))
 
 routes.post('/session', SessionController.store)
 routes.post(
@@ -23,8 +23,10 @@ routes.post(
   UsuarioController.storeFirstUser
 )
 
+/** Rotas acessíveis para usuários autenticados */
 routes.use(authMiddleware)
 
+routes.get('/processos', ProcessoController.index)
 routes.post(
   '/processos',
   uploadDocs,
@@ -32,6 +34,7 @@ routes.post(
   ProcessoController.store
 )
 
+/** Rotas acessíveis para administradores */
 routes.use(isAdminMiddleware)
 
 routes.get('/usuarios', UsuarioController.index)
