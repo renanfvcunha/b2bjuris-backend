@@ -26,6 +26,8 @@ routes.post(
 /** Rotas acessíveis para usuários autenticados */
 routes.use(authMiddleware)
 
+routes.get('/assuntos', AssuntoController.index)
+
 routes.get('/processos', ProcessoController.index)
 routes.post(
   '/processos',
@@ -41,6 +43,6 @@ routes.get('/usuarios', UsuarioController.index)
 routes.post('/usuarios', UsuarioValidator.store, UsuarioController.store)
 routes.delete('/usuarios/:id', UsuarioController.destroy)
 
-routes.post('/assunto', AssuntoController.store)
+routes.post('/assuntos', AssuntoController.store)
 
 export default routes

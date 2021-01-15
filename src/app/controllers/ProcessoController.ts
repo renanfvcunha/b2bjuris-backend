@@ -99,8 +99,7 @@ class ProcessoController {
         numero_processo,
         nome_parte,
         tipo_processo,
-        assunto,
-        status
+        assunto
       }: IProcesso = req.body
       const docs: any = req.files
 
@@ -118,7 +117,6 @@ class ProcessoController {
       processo.tipo_processo = tipo_processo
       processo.assunto = { id: assunto }
       processo.arquivo = docNames
-      processo.status = { id: status }
 
       await getRepository(Processo).save(processo)
 
