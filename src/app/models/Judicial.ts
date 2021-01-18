@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 
 import { Processo } from './Processo'
-import { TipoAcao } from './TiposAcao'
+import { TipoAcao } from './TipoAcao'
 
 @Entity({
   name: 'judiciais'

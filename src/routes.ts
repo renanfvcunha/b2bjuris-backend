@@ -11,6 +11,7 @@ import SessionController from './app/controllers/SessionController'
 import ProcessoController from './app/controllers/ProcessoController'
 import AssuntoController from './app/controllers/AssuntoController'
 import ProcessoValidator from './app/validators/ProcessoValidator'
+import TipoAcaoController from './app/controllers/TipoAcaoController'
 
 const routes = Router()
 
@@ -27,6 +28,8 @@ routes.post(
 routes.use(authMiddleware)
 
 routes.get('/assuntos', AssuntoController.index)
+
+routes.get('/tiposdeacao', TipoAcaoController.index)
 
 routes.get('/processos', ProcessoController.index)
 routes.post(
