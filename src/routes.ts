@@ -12,6 +12,7 @@ import ProcessoController from './app/controllers/ProcessoController'
 import AssuntoController from './app/controllers/AssuntoController'
 import ProcessoValidator from './app/validators/ProcessoValidator'
 import TipoAcaoController from './app/controllers/TipoAcaoController'
+import SecretariaController from './app/controllers/SecretariaController'
 
 const routes = Router()
 
@@ -27,6 +28,8 @@ routes.post(
 /** Rotas acessíveis para usuários autenticados */
 routes.use(authMiddleware)
 
+routes.get('/secretarias', SecretariaController.index)
+
 routes.get('/assuntos', AssuntoController.index)
 
 routes.get('/tiposdeacao', TipoAcaoController.index)
@@ -38,6 +41,8 @@ routes.post(
   ProcessoValidator.store,
   ProcessoController.store
 )
+
+routes.get('/referencias', ProcessoController.references)
 
 /** Rotas acessíveis para administradores */
 routes.use(isAdminMiddleware)

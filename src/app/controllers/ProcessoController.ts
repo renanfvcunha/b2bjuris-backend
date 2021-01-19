@@ -93,6 +93,25 @@ class ProcessoController {
     }
   }
 
+  public async references (req: Request, res: Response) {
+    try {
+      const processos = await getRepository(Processo).find({
+        select: ['id', 'numero_processo', 'nome_parte'],
+        where: [
+          { tipo_processo: 'administrativo' },
+          { tipo_processo: 'judicial' }
+        ]
+      })
+
+      return res.json(processos)
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
   public async store (req: Request, res: Response) {
     try {
       const {
