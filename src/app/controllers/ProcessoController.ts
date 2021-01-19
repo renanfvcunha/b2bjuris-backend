@@ -15,7 +15,7 @@ interface IArquivo {
 }
 
 interface UserRequest extends Request {
-  userId: number
+  userId?: number
 }
 
 class ProcessoController {
@@ -108,6 +108,29 @@ class ProcessoController {
       })
 
       return res.json(processos)
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
+  public async show (req: Request, res: Response) {
+    const { id } = req.params
+
+    try {
+      const processo = await getRepository(Processo).findOne(id, {
+        relations: [
+          'status',
+          'historico',
+          'administrativo',
+          'judicial',
+          'oficio'
+        ]
+      })
+
+      return res.json(processo)
     } catch (err) {
       console.log(err)
       return res.status(500).json({

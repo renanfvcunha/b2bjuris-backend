@@ -35,6 +35,7 @@ routes.get('/assuntos', AssuntoController.index)
 routes.get('/tiposdeacao', TipoAcaoController.index)
 
 routes.get('/processos', ProcessoController.index)
+routes.get('/processos/:id', ProcessoController.show)
 routes.post(
   '/processos',
   uploadDocs,

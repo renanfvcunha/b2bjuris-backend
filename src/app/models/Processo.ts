@@ -5,13 +5,17 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { Arquivo } from './Arquivo'
 
+import { Administrativo } from './Administrativo'
+import { Arquivo } from './Arquivo'
 import { Assunto } from './Assunto'
 import { Historico } from './Historico'
+import { Judicial } from './Judicial'
+import { Oficio } from './Oficio'
 import { Status } from './Status'
 
 @Entity({
@@ -55,6 +59,15 @@ export class Processo {
     length: 20
   })
   tipo_processo?: string
+
+  @OneToOne(() => Administrativo, administrativo => administrativo.processo)
+  administrativo?: Administrativo
+
+  @OneToOne(() => Judicial, judicial => judicial.processo)
+  judicial?: Judicial
+
+  @OneToOne(() => Oficio, oficio => oficio.processo)
+  oficio?: Oficio
 
   @OneToMany(type => Arquivo, arquivo => arquivo.processo, {
     cascade: ['insert']

@@ -6,7 +6,7 @@ import { Processo } from './Processo'
   name: 'administrativos'
 })
 export class Administrativo {
-  @OneToOne(() => Processo, {
+  @OneToOne(() => Processo, processo => processo.administrativo, {
     primary: true,
     cascade: ['insert'],
     onUpdate: 'CASCADE',

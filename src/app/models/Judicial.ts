@@ -7,7 +7,7 @@ import { TipoAcao } from './TipoAcao'
   name: 'judiciais'
 })
 export class Judicial {
-  @OneToOne(() => Processo, {
+  @OneToOne(() => Processo, processo => processo.judicial, {
     primary: true,
     cascade: ['insert'],
     onUpdate: 'CASCADE',
