@@ -14,6 +14,10 @@ interface IArquivo {
   nome: string
 }
 
+interface UserRequest extends Request {
+  userId: number
+}
+
 class ProcessoController {
   public async index (req: Request, res: Response) {
     const { page, per_page, search } = req.query
@@ -112,7 +116,7 @@ class ProcessoController {
     }
   }
 
-  public async store (req: Request, res: Response) {
+  public async store (req: UserRequest, res: Response) {
     try {
       const {
         numero_processo,
@@ -120,6 +124,7 @@ class ProcessoController {
         tipo_processo,
         assunto
       }: IProcesso = req.body
+      const userId = req.userId
       const docs: any = req.files
 
       const docNames: IArquivo[] = []
@@ -136,6 +141,13 @@ class ProcessoController {
       processo.tipo_processo = tipo_processo
       processo.assunto = { id: assunto }
       processo.arquivo = docNames
+      processo.historico = [
+        {
+          processo: processo,
+          usuario: { id: userId },
+          descricao: 'Processo gerado'
+        }
+      ]
 
       await getRepository(Processo).save(processo)
 

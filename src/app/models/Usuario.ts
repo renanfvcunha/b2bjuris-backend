@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import { Historico } from './Historico'
 
 @Entity({
   name: 'usuarios'
@@ -37,6 +39,9 @@ export class Usuario {
     length: 150
   })
   senha?: string
+
+  @OneToMany(type => Historico, historico => historico.usuario)
+  historico?: Historico[]
 
   @CreateDateColumn()
   created_at?: Date

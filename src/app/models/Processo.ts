@@ -11,6 +11,7 @@ import {
 import { Arquivo } from './Arquivo'
 
 import { Assunto } from './Assunto'
+import { Historico } from './Historico'
 import { Status } from './Status'
 
 @Entity({
@@ -59,6 +60,11 @@ export class Processo {
     cascade: ['insert']
   })
   arquivo?: Arquivo[]
+
+  @OneToMany(type => Historico, historico => historico.processo, {
+    cascade: ['insert']
+  })
+  historico?: Historico[]
 
   @CreateDateColumn()
   created_at?: Date
