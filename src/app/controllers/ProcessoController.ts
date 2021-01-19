@@ -120,15 +120,58 @@ class ProcessoController {
     const { id } = req.params
 
     try {
-      const processo = await getRepository(Processo).findOne(id, {
+      const processoQuery = await getRepository(Processo).findOne(id, {
         relations: [
           'status',
           'historico',
+          'historico.usuario',
+          'assunto',
           'administrativo',
           'judicial',
-          'oficio'
+          'judicial.tipo_acao',
+          'oficio',
+          'oficio.secretaria'
         ]
       })
+
+      const processo = {
+        ...processoQuery
+      }
+      if (processoQuery) {
+        processo.id = undefined
+        processo.updated_at = undefined
+        if (processo.status) {
+          processo.status.id = undefined
+          processo.status.tipo = undefined
+        }
+        if (processo.historico) {
+          const novoHistorico = processo.historico.map(historico => ({
+            ...historico,
+            id: undefined,
+            updated_at: undefined,
+            usuario: {
+              nome: historico.usuario?.nome
+            }
+          }))
+          processo.historico = novoHistorico
+        }
+        if (processoQuery.tipo_processo !== 'administrativo') {
+          processo.administrativo = undefined
+        }
+        if (processoQuery.tipo_processo !== 'judicial') {
+          processo.judicial = undefined
+        }
+        if (processoQuery.tipo_processo !== 'oficio') {
+          processo.oficio = undefined
+        }
+        if (processo.assunto) {
+          processo.assunto.id = undefined
+          processo.assunto.tipo = undefined
+        }
+        if (processo.oficio?.secretaria) {
+          processo.oficio.secretaria.id = undefined
+        }
+      }
 
       return res.json(processo)
     } catch (err) {
