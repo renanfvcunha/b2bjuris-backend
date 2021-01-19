@@ -10,6 +10,11 @@ export class Assunto {
   id?: number
 
   @Column({
+    length: 15
+  })
+  tipo?: string
+
+  @Column({
     length: 150
   })
   assunto?: string
