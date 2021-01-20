@@ -58,7 +58,4 @@ export class Administrativo {
     length: 20
   })
   telefone?: string
-
-  @Column('text', { nullable: true })
-  observacoes?: string
 }

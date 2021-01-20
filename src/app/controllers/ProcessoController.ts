@@ -187,6 +187,7 @@ class ProcessoController {
         if (processo.oficio?.processo_ref) {
           processo.oficio.processo_ref.id = undefined
           processo.oficio.processo_ref.nome_parte = undefined
+          processo.oficio.processo_ref.observacoes = undefined
           processo.oficio.processo_ref.tipo_processo = undefined
           processo.oficio.processo_ref.created_at = undefined
           processo.oficio.processo_ref.updated_at = undefined
@@ -211,7 +212,8 @@ class ProcessoController {
         numero_processo,
         nome_parte,
         tipo_processo,
-        assunto
+        assunto,
+        observacoes
       }: IProcesso = req.body
       const userId = req.userId
       const docs: any = req.files
@@ -229,6 +231,7 @@ class ProcessoController {
       processo.nome_parte = nome_parte
       processo.tipo_processo = tipo_processo
       processo.assunto = { id: assunto }
+      processo.observacoes = observacoes
       processo.arquivo = docNames
       processo.historico = [
         {
@@ -250,8 +253,7 @@ class ProcessoController {
           bairro,
           cidade,
           uf,
-          telefone,
-          observacoes
+          telefone
         }: IAdministrativo = req.body
 
         const administrativo = new Administrativo()
@@ -265,7 +267,6 @@ class ProcessoController {
         administrativo.cidade = cidade
         administrativo.uf = uf
         administrativo.telefone = telefone
-        administrativo.observacoes = observacoes
 
         await getRepository(Administrativo).save(administrativo)
       } else if (tipo_processo === 'oficio') {

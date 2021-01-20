@@ -8,5 +8,4 @@ export default interface IAdministrativo {
   cidade?: string
   uf?: string
   telefone?: string
-  observacoes?: string
 }

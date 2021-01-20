@@ -3,5 +3,6 @@ export default interface IProcesso {
   nome_parte?: string
   tipo_processo?: string
   assunto?: number
+  observacoes?: string
   status?: number
 }

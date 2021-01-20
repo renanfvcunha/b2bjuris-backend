@@ -60,6 +60,9 @@ export class Processo {
   })
   tipo_processo?: string
 
+  @Column('text', { nullable: true })
+  observacoes?: string
+
   @OneToOne(() => Administrativo, administrativo => administrativo.processo)
   administrativo?: Administrativo
 
