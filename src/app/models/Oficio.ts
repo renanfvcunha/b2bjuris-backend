@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
+import { Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 
 import { Processo } from './Processo'
 import { Secretaria } from './Secretaria'
@@ -18,10 +18,15 @@ export class Oficio {
   })
   processo?: Processo
 
-  @Column({
+  @ManyToOne(type => Processo, processo => processo.referencia, {
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL',
     nullable: true
   })
-  id_processo_ref?: number
+  @JoinColumn({
+    name: 'id_processo_ref'
+  })
+  processo_ref?: Processo
 
   @ManyToOne(type => Secretaria, secretaria => secretaria.oficio, {
     onUpdate: 'CASCADE',

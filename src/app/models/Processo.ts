@@ -79,6 +79,9 @@ export class Processo {
   })
   historico?: Historico[]
 
+  @OneToMany(type => Oficio, oficio => oficio.processo_ref)
+  referencia?: Oficio
+
   @CreateDateColumn()
   created_at?: Date
 

@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import express from 'express'
 import { createConnection } from 'typeorm'
 import cors from 'cors'
+import { resolve } from 'path'
 
 import routes from './routes'
 
@@ -20,6 +21,10 @@ class App {
   private middlewares () {
     this.express.use(express.json())
     this.express.use(cors())
+    this.express.use(
+      '/docs',
+      express.static(resolve(__dirname, 'uploads', 'docs'))
+    )
   }
 
   private routes () {

@@ -123,6 +123,7 @@ class ProcessoController {
       const processoQuery = await getRepository(Processo).findOne(id, {
         relations: [
           'status',
+          'arquivo',
           'historico',
           'historico.usuario',
           'assunto',
@@ -130,6 +131,7 @@ class ProcessoController {
           'judicial',
           'judicial.tipo_acao',
           'oficio',
+          'oficio.processo_ref',
           'oficio.secretaria'
         ]
       })
@@ -144,6 +146,14 @@ class ProcessoController {
           processo.status.id = undefined
           processo.status.tipo = undefined
         }
+        if (processo.arquivo) {
+          const novoArquivo = processo.arquivo.map(arquivo => ({
+            id: undefined,
+            nome: `${process.env.APP_URL}/docs/${arquivo.nome}`
+          }))
+
+          processo.arquivo = novoArquivo
+        }
         if (processo.historico) {
           const novoHistorico = processo.historico.map(historico => ({
             ...historico,
@@ -155,18 +165,31 @@ class ProcessoController {
           }))
           processo.historico = novoHistorico
         }
-        if (processoQuery.tipo_processo !== 'administrativo') {
-          processo.administrativo = undefined
-        }
-        if (processoQuery.tipo_processo !== 'judicial') {
+        if (processoQuery.tipo_processo === 'administrativo') {
+          processo.tipo_processo = 'Administrativo'
           processo.judicial = undefined
-        }
-        if (processoQuery.tipo_processo !== 'oficio') {
           processo.oficio = undefined
+        }
+        if (processoQuery.tipo_processo === 'judicial') {
+          processo.tipo_processo = 'Judicial'
+          processo.administrativo = undefined
+          processo.oficio = undefined
+        }
+        if (processoQuery.tipo_processo === 'oficio') {
+          processo.tipo_processo = 'Ofício'
+          processo.administrativo = undefined
+          processo.judicial = undefined
         }
         if (processo.assunto) {
           processo.assunto.id = undefined
           processo.assunto.tipo = undefined
+        }
+        if (processo.oficio?.processo_ref) {
+          processo.oficio.processo_ref.id = undefined
+          processo.oficio.processo_ref.nome_parte = undefined
+          processo.oficio.processo_ref.tipo_processo = undefined
+          processo.oficio.processo_ref.created_at = undefined
+          processo.oficio.processo_ref.updated_at = undefined
         }
         if (processo.oficio?.secretaria) {
           processo.oficio.secretaria.id = undefined
@@ -250,7 +273,7 @@ class ProcessoController {
 
         const oficio = new Oficio()
         oficio.processo = processo
-        oficio.id_processo_ref = processo_ref
+        oficio.processo_ref = { id: processo_ref }
         oficio.secretaria = { id: secretaria }
 
         await getRepository(Oficio).save(oficio)
