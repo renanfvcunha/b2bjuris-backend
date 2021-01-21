@@ -120,50 +120,51 @@ class ProcessoController {
     const { id } = req.params
 
     try {
-      const processoQuery = await getRepository(Processo).findOne(id, {
-        relations: [
-          'status',
+      const processoQuery = await getRepository(Processo)
+        .createQueryBuilder('processo')
+        .select([
+          'processo.numero_processo',
+          'processo.nome_parte',
+          'processo.tipo_processo',
+          'processo.observacoes',
+          'status.id',
+          'status.status',
           'arquivo',
           'historico',
-          'historico.usuario',
-          'assunto',
+          'historico_usuario.nome',
+          'assunto.assunto',
           'administrativo',
           'judicial',
-          'judicial.tipo_acao',
+          'tipo_acao.tipo_acao',
           'oficio',
-          'oficio.processo_ref',
-          'oficio.secretaria'
-        ]
-      })
+          'processo_ref.numero_processo',
+          'secretaria.secretaria'
+        ])
+        .leftJoin('processo.status', 'status')
+        .leftJoin('processo.arquivo', 'arquivo')
+        .leftJoin('processo.historico', 'historico')
+        .leftJoin('historico.usuario', 'historico_usuario')
+        .leftJoin('processo.assunto', 'assunto')
+        .leftJoin('processo.administrativo', 'administrativo')
+        .leftJoin('processo.judicial', 'judicial')
+        .leftJoin('judicial.tipo_acao', 'tipo_acao')
+        .leftJoin('processo.oficio', 'oficio')
+        .leftJoin('oficio.processo_ref', 'processo_ref')
+        .leftJoin('oficio.secretaria', 'secretaria')
+        .where('processo.id = :id', { id })
+        .getOne()
 
       const processo = {
         ...processoQuery
       }
       if (processoQuery) {
-        processo.id = undefined
-        processo.updated_at = undefined
-        if (processo.status) {
-          processo.status.id = undefined
-          processo.status.tipo = undefined
-        }
         if (processo.arquivo) {
           const novoArquivo = processo.arquivo.map(arquivo => ({
-            id: undefined,
+            ...arquivo,
             nome: `${process.env.APP_URL}/docs/${arquivo.nome}`
           }))
 
           processo.arquivo = novoArquivo
-        }
-        if (processo.historico) {
-          const novoHistorico = processo.historico.map(historico => ({
-            ...historico,
-            id: undefined,
-            updated_at: undefined,
-            usuario: {
-              nome: historico.usuario?.nome
-            }
-          }))
-          processo.historico = novoHistorico
         }
         if (processoQuery.tipo_processo === 'administrativo') {
           processo.tipo_processo = 'Administrativo'
@@ -179,21 +180,6 @@ class ProcessoController {
           processo.tipo_processo = 'Ofício'
           processo.administrativo = undefined
           processo.judicial = undefined
-        }
-        if (processo.assunto) {
-          processo.assunto.id = undefined
-          processo.assunto.tipo = undefined
-        }
-        if (processo.oficio?.processo_ref) {
-          processo.oficio.processo_ref.id = undefined
-          processo.oficio.processo_ref.nome_parte = undefined
-          processo.oficio.processo_ref.observacoes = undefined
-          processo.oficio.processo_ref.tipo_processo = undefined
-          processo.oficio.processo_ref.created_at = undefined
-          processo.oficio.processo_ref.updated_at = undefined
-        }
-        if (processo.oficio?.secretaria) {
-          processo.oficio.secretaria.id = undefined
         }
       }
 
