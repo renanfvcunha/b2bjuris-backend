@@ -28,4 +28,6 @@ export class Arquivo {
     length: 150
   })
   nome?: string
+
+  url?: string
 }

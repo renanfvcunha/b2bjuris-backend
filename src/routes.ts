@@ -13,6 +13,7 @@ import AssuntoController from './app/controllers/AssuntoController'
 import ProcessoValidator from './app/validators/ProcessoValidator'
 import TipoAcaoController from './app/controllers/TipoAcaoController'
 import SecretariaController from './app/controllers/SecretariaController'
+import StatusController from './app/controllers/StatusController'
 
 const routes = Router()
 
@@ -34,6 +35,8 @@ routes.get('/assuntos', AssuntoController.index)
 
 routes.get('/tiposdeacao', TipoAcaoController.index)
 
+routes.get('/status', StatusController.index)
+
 routes.get('/processos', ProcessoController.index)
 routes.get('/processos/:id', ProcessoController.show)
 routes.post(
@@ -42,6 +45,7 @@ routes.post(
   ProcessoValidator.store,
   ProcessoController.store
 )
+routes.put('/processos/:id', ProcessoController.update)
 
 routes.get('/referencias', ProcessoController.references)
 

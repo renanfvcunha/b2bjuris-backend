@@ -161,7 +161,7 @@ class ProcessoController {
         if (processo.arquivo) {
           const novoArquivo = processo.arquivo.map(arquivo => ({
             ...arquivo,
-            nome: `${process.env.APP_URL}/docs/${arquivo.nome}`
+            url: `${process.env.APP_URL}/docs/${arquivo.nome}`
           }))
 
           processo.arquivo = novoArquivo
@@ -280,6 +280,27 @@ class ProcessoController {
       }
 
       return res.json({ msg: 'Processo cadastrado com sucesso!' })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
+  public async update (req: Request, res: Response) {
+    const { id } = req.params
+    const { status }: { status: string } = req.body
+
+    try {
+      const processo = new Processo()
+
+      if (status) {
+        processo.status = { id: Number(status) }
+        getRepository(Processo).update(id, processo)
+
+        res.json({ msg: 'Status alterado com sucesso!' })
+      }
     } catch (err) {
       console.log(err)
       return res.status(500).json({
