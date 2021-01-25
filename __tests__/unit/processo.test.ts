@@ -38,7 +38,6 @@ describe('Processo Unit', () => {
     administrativo.cidade = 'Timon'
     administrativo.uf = 'PI'
     administrativo.telefone = '8698777987'
-    administrativo.observacoes = 'Nada a declarar'
 
     const admin = await getRepository(Administrativo).save(administrativo)
 
@@ -57,12 +56,12 @@ describe('Processo Unit', () => {
 
     const oficio = new Oficio()
     oficio.processo = processo
-    oficio.id_processo_ref = 1
+    oficio.processo_ref = { id: 1 }
 
     const ofc = await getRepository(Oficio).save(oficio)
 
     console.log(process, ofc)
 
-    expect(oficio.id_processo_ref).toBe(1)
+    expect(oficio.processo_ref.id).toBe(1)
   })
 })

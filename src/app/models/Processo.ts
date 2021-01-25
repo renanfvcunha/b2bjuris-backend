@@ -13,6 +13,7 @@ import {
 import { Administrativo } from './Administrativo'
 import { Arquivo } from './Arquivo'
 import { Assunto } from './Assunto'
+import { Encaminhamento } from './Encaminhamento'
 import { Historico } from './Historico'
 import { Judicial } from './Judicial'
 import { Oficio } from './Oficio'
@@ -84,6 +85,9 @@ export class Processo {
 
   @OneToMany(type => Oficio, oficio => oficio.processo_ref)
   referencia?: Oficio
+
+  @OneToMany(type => Encaminhamento, encaminhamento => encaminhamento.processo)
+  encaminhamento?: Encaminhamento[]
 
   @CreateDateColumn()
   created_at?: Date
