@@ -14,6 +14,7 @@ import ProcessoValidator from './app/validators/ProcessoValidator'
 import TipoAcaoController from './app/controllers/TipoAcaoController'
 import SecretariaController from './app/controllers/SecretariaController'
 import StatusController from './app/controllers/StatusController'
+import EncaminhamentoController from './app/controllers/EncaminhamentoController'
 
 const routes = Router()
 
@@ -48,6 +49,8 @@ routes.post(
 routes.put('/processos/:id', ProcessoController.update)
 
 routes.get('/referencias', ProcessoController.references)
+
+routes.post('/encaminhar/:id', EncaminhamentoController.store)
 
 /** Rotas acessíveis para administradores */
 routes.use(isAdminMiddleware)

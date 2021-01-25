@@ -9,6 +9,7 @@ import {
 } from 'typeorm'
 
 import { Processo } from './Processo'
+import { TipoEncaminhamento } from './TipoEncaminhamento'
 import { Usuario } from './Usuario'
 
 @Entity({
@@ -37,15 +38,23 @@ export class Encaminhamento {
   })
   usuario?: Usuario
 
+  @ManyToOne(
+    () => TipoEncaminhamento,
+    tipo_encaminhamento => tipo_encaminhamento.encaminhamento,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
+    }
+  )
+  @JoinColumn({
+    name: 'id_tipo_encaminhamento'
+  })
+  tipo_encaminhamento?: TipoEncaminhamento
+
   @Column({
     default: false
   })
   recebido?: boolean
-
-  @Column({
-    length: 50
-  })
-  tipo_encaminhamento?: string
 
   @Column('date')
   prazo?: Date
