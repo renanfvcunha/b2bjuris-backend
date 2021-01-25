@@ -13,6 +13,6 @@ export class TipoAcao {
   })
   tipo_acao?: string
 
-  @OneToMany(type => Judicial, judicial => judicial.tipo_acao)
+  @OneToMany(() => Judicial, judicial => judicial.tipo_acao)
   judicial?: Judicial[]
 }

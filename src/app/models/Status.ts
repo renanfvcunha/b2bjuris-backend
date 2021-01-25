@@ -19,6 +19,6 @@ export class Status {
   })
   status?: string
 
-  @OneToMany(type => Processo, processo => processo.status)
+  @OneToMany(() => Processo, processo => processo.status)
   processo?: Processo[]
 }

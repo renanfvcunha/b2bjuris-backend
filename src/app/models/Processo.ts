@@ -26,7 +26,7 @@ export class Processo {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(type => Assunto, assunto => assunto.processo, {
+  @ManyToOne(() => Assunto, assunto => assunto.processo, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
     nullable: true
@@ -36,7 +36,7 @@ export class Processo {
   })
   assunto?: Assunto
 
-  @ManyToOne(type => Status, status => status.processo, {
+  @ManyToOne(() => Status, status => status.processo, {
     cascade: ['insert'],
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
@@ -73,20 +73,20 @@ export class Processo {
   @OneToOne(() => Oficio, oficio => oficio.processo)
   oficio?: Oficio
 
-  @OneToMany(type => Arquivo, arquivo => arquivo.processo, {
+  @OneToMany(() => Arquivo, arquivo => arquivo.processo, {
     cascade: ['insert']
   })
   arquivo?: Arquivo[]
 
-  @OneToMany(type => Historico, historico => historico.processo, {
+  @OneToMany(() => Historico, historico => historico.processo, {
     cascade: ['insert']
   })
   historico?: Historico[]
 
-  @OneToMany(type => Oficio, oficio => oficio.processo_ref)
+  @OneToMany(() => Oficio, oficio => oficio.processo_ref)
   referencia?: Oficio
 
-  @OneToMany(type => Encaminhamento, encaminhamento => encaminhamento.processo)
+  @OneToMany(() => Encaminhamento, encaminhamento => encaminhamento.processo)
   encaminhamento?: Encaminhamento[]
 
   @CreateDateColumn()

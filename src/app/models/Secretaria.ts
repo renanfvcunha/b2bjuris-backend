@@ -14,6 +14,6 @@ export class Secretaria {
   })
   secretaria?: string
 
-  @OneToMany(type => Oficio, oficio => oficio.secretaria)
+  @OneToMany(() => Oficio, oficio => oficio.secretaria)
   oficio?: Oficio[]
 }

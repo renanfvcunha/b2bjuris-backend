@@ -18,7 +18,7 @@ export class Encaminhamento {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(type => Processo, processo => processo.encaminhamento, {
+  @ManyToOne(() => Processo, processo => processo.encaminhamento, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
     nullable: false
@@ -28,7 +28,7 @@ export class Encaminhamento {
   })
   processo?: Processo
 
-  @ManyToOne(type => Usuario, usuario => usuario.encaminhamento, {
+  @ManyToOne(() => Usuario, usuario => usuario.encaminhamento, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   })

@@ -19,6 +19,6 @@ export class Assunto {
   })
   assunto?: string
 
-  @OneToMany(type => Processo, processo => processo.assunto)
+  @OneToMany(() => Processo, processo => processo.assunto)
   processo?: Processo[]
 }

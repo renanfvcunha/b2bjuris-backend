@@ -18,7 +18,7 @@ export class Oficio {
   })
   processo?: Processo
 
-  @ManyToOne(type => Processo, processo => processo.referencia, {
+  @ManyToOne(() => Processo, processo => processo.referencia, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
     nullable: true
@@ -28,7 +28,7 @@ export class Oficio {
   })
   processo_ref?: Processo
 
-  @ManyToOne(type => Secretaria, secretaria => secretaria.oficio, {
+  @ManyToOne(() => Secretaria, secretaria => secretaria.oficio, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
     nullable: true

@@ -42,10 +42,10 @@ export class Usuario {
   })
   senha?: string
 
-  @OneToMany(type => Historico, historico => historico.usuario)
+  @OneToMany(() => Historico, historico => historico.usuario)
   historico?: Historico[]
 
-  @OneToMany(type => Encaminhamento, encaminhamento => encaminhamento.usuario)
+  @OneToMany(() => Encaminhamento, encaminhamento => encaminhamento.usuario)
   encaminhamento?: Encaminhamento[]
 
   @CreateDateColumn()

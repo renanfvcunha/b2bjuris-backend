@@ -15,7 +15,7 @@ export class Arquivo {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(type => Processo, processo => processo.arquivo, {
+  @ManyToOne(() => Processo, processo => processo.arquivo, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   })

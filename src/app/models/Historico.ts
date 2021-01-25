@@ -18,7 +18,7 @@ export class Historico {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(type => Processo, processo => processo.historico, {
+  @ManyToOne(() => Processo, processo => processo.historico, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
     nullable: false
@@ -28,7 +28,7 @@ export class Historico {
   })
   processo?: Processo
 
-  @ManyToOne(type => Usuario, usuario => usuario.historico, {
+  @ManyToOne(() => Usuario, usuario => usuario.historico, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   })

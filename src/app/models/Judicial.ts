@@ -26,7 +26,7 @@ export class Judicial {
   @Column('double')
   valor_causa?: number
 
-  @ManyToOne(type => TipoAcao, tipo_acao => tipo_acao.judicial, {
+  @ManyToOne(() => TipoAcao, tipo_acao => tipo_acao.judicial, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
     nullable: true
