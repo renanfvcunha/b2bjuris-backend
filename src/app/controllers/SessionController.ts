@@ -10,15 +10,7 @@ import authConfig from '../../config/auth'
 class SessionController {
   public async store (req: Request, res: Response) {
     try {
-      const { nome_usuario, senha, lembrar }: ISession = req.body
-
-      let expireToken: string
-
-      if (lembrar) {
-        expireToken = '7d'
-      } else {
-        expireToken = '12h'
-      }
+      const { nome_usuario, senha }: ISession = req.body
 
       // Buscando usuário no banco
       const usuario = await getRepository(Usuario)
@@ -44,7 +36,7 @@ class SessionController {
       return res.json({
         user: { id, nome, tipo_usuario },
         token: jwt.sign({ id }, authConfig.secret, {
-          expiresIn: expireToken
+          expiresIn: '7d'
         })
       })
     } catch (err) {

@@ -15,6 +15,7 @@ import TipoAcaoController from './app/controllers/TipoAcaoController'
 import SecretariaController from './app/controllers/SecretariaController'
 import StatusController from './app/controllers/StatusController'
 import EncaminhamentoController from './app/controllers/EncaminhamentoController'
+import TipoEncaminhamentoController from './app/controllers/TipoEncaminhamentoController'
 
 const routes = Router()
 
@@ -46,11 +47,16 @@ routes.post(
   ProcessoValidator.store,
   ProcessoController.store
 )
+routes.patch('/processos/:id', ProcessoController.update)
 routes.put('/processos/:id', ProcessoController.update)
 
 routes.get('/referencias', ProcessoController.references)
 
 routes.post('/encaminhar/:id', EncaminhamentoController.store)
+
+routes.get('/procuradores', UsuarioController.getProcuradores)
+
+routes.get('/tiposencaminhamento', TipoEncaminhamentoController.index)
 
 /** Rotas acessíveis para administradores */
 routes.use(isAdminMiddleware)

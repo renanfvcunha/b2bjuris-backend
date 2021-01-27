@@ -133,6 +133,9 @@ class ProcessoController {
           'historico',
           'historico_usuario.nome',
           'assunto.assunto',
+          'encaminhamento.id',
+          'encaminhamento.recebido',
+          'encaminhamento_usuario.nome',
           'administrativo',
           'judicial',
           'tipo_acao.tipo_acao',
@@ -145,6 +148,8 @@ class ProcessoController {
         .leftJoin('processo.historico', 'historico')
         .leftJoin('historico.usuario', 'historico_usuario')
         .leftJoin('processo.assunto', 'assunto')
+        .leftJoin('processo.encaminhamento', 'encaminhamento')
+        .leftJoin('encaminhamento.usuario', 'encaminhamento_usuario')
         .leftJoin('processo.administrativo', 'administrativo')
         .leftJoin('processo.judicial', 'judicial')
         .leftJoin('judicial.tipo_acao', 'tipo_acao')
@@ -152,6 +157,7 @@ class ProcessoController {
         .leftJoin('oficio.processo_ref', 'processo_ref')
         .leftJoin('oficio.secretaria', 'secretaria')
         .where('processo.id = :id', { id })
+        .orderBy('historico.created_at', 'ASC')
         .getOne()
 
       const processo = {

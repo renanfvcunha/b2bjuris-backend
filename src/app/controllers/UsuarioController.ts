@@ -78,6 +78,24 @@ class UsuarioController {
     }
   }
 
+  public async getProcuradores (req: Request, res: Response) {
+    try {
+      const procuradores = await getRepository(Usuario).find({
+        select: ['id', 'nome'],
+        where: {
+          tipo_usuario: 'procurador'
+        }
+      })
+
+      return res.json(procuradores)
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
   public async store (req: Request, res: Response) {
     const {
       nome,
@@ -152,7 +170,7 @@ class UsuarioController {
       return res.json({
         user: { id, nome, tipo_usuario },
         token: jwt.sign({ id }, authConfig.secret, {
-          expiresIn: '5m'
+          expiresIn: '7d'
         })
       })
     } catch (err) {
