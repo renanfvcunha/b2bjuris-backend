@@ -71,6 +71,22 @@ class EncaminhamentoController {
       enc.prazo = new Date(prazo)
       enc.observacoes = observacoes
 
+      /** Verificando se o processo já foi encaminhado para o usuário */
+      const encaminhamento = await getRepository(Encaminhamento)
+        .createQueryBuilder('encaminhamento')
+        .select(['encaminhamento.id', 'usuario.nome', 'processo.id'])
+        .leftJoin('encaminhamento.usuario', 'usuario')
+        .leftJoin('encaminhamento.processo', 'processo')
+        .where('processo.id = :id', { id })
+        .andWhere('usuario.id = :id_usuario', { id_usuario })
+        .getOne()
+
+      if (encaminhamento) {
+        return res
+          .status(400)
+          .json({ msg: 'O processo já foi encaminhado para este procurador.' })
+      }
+
       await getRepository(Encaminhamento)
         .save(enc)
         .then(async () => {
@@ -94,6 +110,66 @@ class EncaminhamentoController {
         })
 
       return res.json({ msg: 'Processo encaminhado com sucesso!' })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
+  public async update (req: UserRequest, res: Response) {
+    const { id } = req.params
+    const userId = req.userId
+    const { recebido }: { recebido?: boolean } = req.body
+
+    try {
+      const enc = new Encaminhamento()
+
+      if (recebido) {
+        /** Verificando se outro usuário está tentando fazer a marcação indevidamente */
+        const encaminhamento = await getRepository(Encaminhamento)
+          .createQueryBuilder('encaminhamento')
+          .select([
+            'encaminhamento.id',
+            'encaminhamento.recebido',
+            'usuario.id',
+            'usuario.nome',
+            'processo.id'
+          ])
+          .leftJoin('encaminhamento.usuario', 'usuario')
+          .leftJoin('encaminhamento.processo', 'processo')
+          .where('encaminhamento.id = :id', { id })
+          .getOne()
+
+        if (encaminhamento?.recebido) {
+          return res
+            .status(400)
+            .json({ msg: 'O encaminhamento já está marcado como recebido!' })
+        }
+
+        if (encaminhamento?.usuario?.id !== userId) {
+          return res
+            .status(403)
+            .json({ msg: 'O encaminhamento pertence a outro procurador!' })
+        }
+
+        enc.recebido = recebido
+        await getRepository(Encaminhamento)
+          .update(id, enc)
+          .then(async () => {
+            const historico = new Historico()
+            historico.processo = { id: encaminhamento?.processo?.id }
+            historico.usuario = { id: userId }
+            historico.descricao = `Processo recebido pelo(a) procurador(a) ${encaminhamento?.usuario?.nome}`
+
+            await getRepository(Historico).save(historico)
+          })
+
+        console.log(encaminhamento, userId)
+
+        res.json({ msg: 'Processo recebido!' })
+      }
     } catch (err) {
       console.log(err)
       return res.status(500).json({

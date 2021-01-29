@@ -54,6 +54,7 @@ routes.get('/referencias', ProcessoController.references)
 
 routes.get('/encaminhamentos', EncaminhamentoController.index)
 routes.post('/encaminhamentos/:id', EncaminhamentoController.store)
+routes.patch('/encaminhamentos/:id', EncaminhamentoController.update)
 
 routes.get('/procuradores', UsuarioController.getProcuradores)
 
