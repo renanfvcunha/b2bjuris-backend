@@ -12,13 +12,13 @@ import { Processo } from './Processo'
 import { Usuario } from './Usuario'
 
 @Entity({
-  name: 'processos_arquivos'
+  name: 'processos_observacoes'
 })
-export class Arquivo {
+export class Observacoes {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(() => Processo, processo => processo.arquivo, {
+  @ManyToOne(() => Processo, processo => processo.observacoes, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   })
@@ -27,7 +27,7 @@ export class Arquivo {
   })
   processo?: Processo
 
-  @ManyToOne(() => Usuario, usuario => usuario.arquivo, {
+  @ManyToOne(() => Usuario, usuario => usuario.observacoes, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   })
@@ -36,16 +36,12 @@ export class Arquivo {
   })
   usuario?: Usuario
 
-  @Column({
-    length: 150
-  })
-  nome?: string
+  @Column('text')
+  observacoes?: string
 
   @CreateDateColumn()
   created_at?: Date
 
   @UpdateDateColumn()
   updated_at?: Date
-
-  url?: string
 }

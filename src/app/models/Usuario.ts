@@ -6,9 +6,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import { Arquivo } from './Arquivo'
 
 import { Encaminhamento } from './Encaminhamento'
 import { Historico } from './Historico'
+import { Observacoes } from './Observacoes'
 
 @Entity({
   name: 'usuarios'
@@ -47,6 +49,12 @@ export class Usuario {
 
   @OneToMany(() => Encaminhamento, encaminhamento => encaminhamento.usuario)
   encaminhamento?: Encaminhamento[]
+
+  @OneToMany(() => Arquivo, arquivo => arquivo.usuario)
+  arquivo?: Arquivo[]
+
+  @OneToMany(() => Observacoes, observacoes => observacoes.usuario)
+  observacoes?: Observacoes[]
 
   @CreateDateColumn()
   created_at?: Date

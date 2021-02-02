@@ -6,13 +6,13 @@ import IJudicial from '../interfaces/IJudicial'
 import IOficio from '../interfaces/IOficio'
 import IProcesso from '../interfaces/IProcesso'
 import { Administrativo } from '../models/Administrativo'
+import { Arquivo } from '../models/Arquivo'
+import { Historico } from '../models/Historico'
 import { Judicial } from '../models/Judicial'
+import { Observacoes } from '../models/Observacoes'
 import { Oficio } from '../models/Oficio'
 import { Processo } from '../models/Processo'
-
-interface IArquivo {
-  nome: string
-}
+import { Usuario } from '../models/Usuario'
 
 interface UserRequest extends Request {
   userId?: number
@@ -73,6 +73,7 @@ class ProcessoController {
 
         const processos = processosQuery.map(processo => ({
           ...processo,
+          finalizado: processo.finalizado ? 'Sim' : 'Não',
           status: processo.status?.status || null
         }))
 
@@ -126,10 +127,13 @@ class ProcessoController {
           'processo.numero_processo',
           'processo.nome_parte',
           'processo.tipo_processo',
-          'processo.observacoes',
+          'observacoes.id',
+          'observacoes.observacoes',
+          'observacoes_usuario.nome',
           'status.id',
           'status.status',
-          'arquivo',
+          'arquivo.id',
+          'arquivo.nome',
           'historico',
           'historico_usuario.nome',
           'assunto.assunto',
@@ -143,6 +147,8 @@ class ProcessoController {
           'processo_ref.numero_processo',
           'secretaria.secretaria'
         ])
+        .leftJoin('processo.observacoes', 'observacoes')
+        .leftJoin('observacoes.usuario', 'observacoes_usuario')
         .leftJoin('processo.status', 'status')
         .leftJoin('processo.arquivo', 'arquivo')
         .leftJoin('processo.historico', 'historico')
@@ -210,11 +216,11 @@ class ProcessoController {
       const userId = req.userId
       const docs: any = req.files
 
-      const docNames: IArquivo[] = []
+      const docNames: Arquivo[] = []
 
       if (docs) {
         docs.forEach((doc: Express.Multer.File) => {
-          docNames.push({ nome: doc.filename })
+          docNames.push({ usuario: { id: userId }, nome: doc.filename })
         })
       }
 
@@ -223,11 +229,15 @@ class ProcessoController {
       processo.nome_parte = nome_parte
       processo.tipo_processo = tipo_processo
       processo.assunto = { id: assunto }
-      processo.observacoes = observacoes
+      processo.observacoes = [
+        {
+          usuario: { id: userId },
+          observacoes
+        }
+      ]
       processo.arquivo = docNames
       processo.historico = [
         {
-          processo: processo,
           usuario: { id: userId },
           descricao: 'Processo gerado'
         }
@@ -260,7 +270,11 @@ class ProcessoController {
         administrativo.uf = uf
         administrativo.telefone = telefone
 
-        await getRepository(Administrativo).save(administrativo)
+        await getRepository(Administrativo)
+          .save(administrativo)
+          .catch(async () => {
+            await getRepository(Processo).delete(processo.id || 0)
+          })
       } else if (tipo_processo === 'oficio') {
         const { processo_ref, secretaria }: IOficio = req.body
 
@@ -269,7 +283,11 @@ class ProcessoController {
         oficio.processo_ref = { id: processo_ref }
         oficio.secretaria = { id: secretaria }
 
-        await getRepository(Oficio).save(oficio)
+        await getRepository(Oficio)
+          .save(oficio)
+          .catch(async () => {
+            await getRepository(Processo).delete(processo.id || 0)
+          })
       } else if (tipo_processo === 'judicial') {
         const { tipo_acao, polo_passivo, valor_causa }: IJudicial = req.body
 
@@ -279,13 +297,108 @@ class ProcessoController {
         judicial.polo_passivo = polo_passivo
         judicial.valor_causa = valor_causa
 
-        await getRepository(Judicial).save(judicial)
+        await getRepository(Judicial)
+          .save(judicial)
+          .catch(async () => {
+            await getRepository(Processo).delete(processo.id || 0)
+          })
       } else {
         await getRepository(Processo).delete(processo.id || 0)
         return res.status(400).json({ msg: 'Tipo de processo inválido!' })
       }
 
       return res.json({ msg: 'Processo cadastrado com sucesso!' })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
+  public async updateByProc (req: UserRequest, res: Response) {
+    const { id } = req.params
+    const userId = req.userId
+    const { status, observacoes } = req.body
+    const docs: any = req.files
+
+    const docNames: Arquivo[] = []
+
+    try {
+      /** Verificando se usuário que está editando o processo é o mesmo para
+       * qual o processo foi encaminhado.
+       */
+      const verifyEnc = await getRepository(Processo)
+        .createQueryBuilder('processo')
+        .select(['processo.id', 'encaminhamento.id'])
+        .leftJoin('processo.encaminhamento', 'encaminhamento')
+        .leftJoin('encaminhamento.usuario', 'encaminhamento_usuario')
+        .where('processo.id = :id', { id })
+        .andWhere('encaminhamento_usuario.id = :userId', { userId })
+        .getOne()
+
+      if (!verifyEnc) {
+        return res.status(403).json({
+          msg:
+            'Não é possível alterar um processo que não foi encaminhado para você.'
+        })
+      }
+
+      /** Buscando procurador que está editando o processo */
+      const procurador = await getRepository(Usuario).findOne({
+        where: { id: userId }
+      })
+
+      const processo = new Processo()
+      if (status) {
+        processo.status = { id: Number(status) }
+      }
+
+      await getRepository(Processo)
+        .update(id, processo)
+        .then(async () => {
+          if (docs) {
+            docs.forEach((doc: Express.Multer.File) => {
+              docNames.push({
+                processo: { id: Number(id) },
+                usuario: { id: userId },
+                nome: doc.filename
+              })
+            })
+
+            await getRepository(Arquivo)
+              .save(docNames)
+              .catch(async () => {
+                await getRepository(Processo).delete(id)
+              })
+          }
+
+          if (observacoes) {
+            const obs = new Observacoes()
+            obs.processo = { id: Number(id) }
+            obs.usuario = { id: userId }
+            obs.observacoes = observacoes
+
+            await getRepository(Observacoes)
+              .save(obs)
+              .catch(async () => {
+                await getRepository(Processo).delete(id)
+              })
+          }
+
+          const hist = new Historico()
+          hist.processo = { id: Number(id) }
+          hist.descricao = `Processo alterado pelo(a) procurador(a) ${procurador?.nome}`
+          hist.usuario = procurador
+
+          await getRepository(Historico)
+            .save(hist)
+            .catch(async () => {
+              await getRepository(Processo).delete(id)
+            })
+        })
+
+      return res.json({ msg: 'Processo alterado com sucesso!' })
     } catch (err) {
       console.log(err)
       return res.status(500).json({

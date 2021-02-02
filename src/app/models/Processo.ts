@@ -16,6 +16,7 @@ import { Assunto } from './Assunto'
 import { Encaminhamento } from './Encaminhamento'
 import { Historico } from './Historico'
 import { Judicial } from './Judicial'
+import { Observacoes } from './Observacoes'
 import { Oficio } from './Oficio'
 import { Status } from './Status'
 
@@ -61,8 +62,10 @@ export class Processo {
   })
   tipo_processo?: string
 
-  @Column('text', { nullable: true })
-  observacoes?: string
+  @Column({
+    default: false
+  })
+  finalizado?: boolean
 
   @OneToOne(() => Administrativo, administrativo => administrativo.processo)
   administrativo?: Administrativo
@@ -74,9 +77,14 @@ export class Processo {
   oficio?: Oficio
 
   @OneToMany(() => Arquivo, arquivo => arquivo.processo, {
-    cascade: ['insert']
+    cascade: ['insert', 'update']
   })
   arquivo?: Arquivo[]
+
+  @OneToMany(() => Observacoes, observacoes => observacoes.processo, {
+    cascade: ['insert']
+  })
+  observacoes?: Observacoes[]
 
   @OneToMany(() => Historico, historico => historico.processo, {
     cascade: ['insert']

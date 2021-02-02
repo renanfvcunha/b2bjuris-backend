@@ -48,11 +48,13 @@ routes.post(
   ProcessoController.store
 )
 routes.patch('/processos/:id', ProcessoController.update)
+routes.patch('/updatebyproc/:id', uploadDocs, ProcessoController.updateByProc)
 routes.put('/processos/:id', ProcessoController.update)
 
 routes.get('/referencias', ProcessoController.references)
 
 routes.get('/encaminhamentos', EncaminhamentoController.index)
+routes.get('/encaminhamentos/:id', EncaminhamentoController.show)
 routes.post('/encaminhamentos/:id', EncaminhamentoController.store)
 routes.patch('/encaminhamentos/:id', EncaminhamentoController.update)
 
