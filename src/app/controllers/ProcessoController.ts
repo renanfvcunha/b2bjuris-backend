@@ -409,16 +409,26 @@ class ProcessoController {
 
   public async update (req: Request, res: Response) {
     const { id } = req.params
-    const { status }: { status: string } = req.body
+    const {
+      status,
+      finalizado
+    }: { status: string; finalizado: boolean } = req.body
 
     try {
       const processo = new Processo()
 
       if (status) {
         processo.status = { id: Number(status) }
-        getRepository(Processo).update(id, processo)
+        await getRepository(Processo).update(id, processo)
 
-        res.json({ msg: 'Status alterado com sucesso!' })
+        return res.json({ msg: 'Status alterado com sucesso!' })
+      }
+
+      if (finalizado) {
+        processo.finalizado = true
+        await getRepository(Processo).update(id, processo)
+
+        return res.json({ msg: 'Processo finalizado com sucesso!' })
       }
     } catch (err) {
       console.log(err)
