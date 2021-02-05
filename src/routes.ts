@@ -17,9 +17,13 @@ import StatusController from './app/controllers/StatusController'
 import EncaminhamentoController from './app/controllers/EncaminhamentoController'
 import TipoEncaminhamentoController from './app/controllers/TipoEncaminhamentoController'
 
+import checkHasUser from './app/utils/checkHasUser'
+
 const routes = Router()
 
 routes.get('/', (req, res) => res.json({ msg: 'B2B Juris API' }))
+
+routes.get('/checkhasuser', checkHasUser)
 
 routes.post('/session', SessionController.store)
 routes.post(

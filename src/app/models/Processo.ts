@@ -46,7 +46,7 @@ export class Processo {
   @JoinColumn({
     name: 'id_status'
   })
-  status?: Status
+  status?: Status | null
 
   @Column({ unique: true })
   numero_processo?: number

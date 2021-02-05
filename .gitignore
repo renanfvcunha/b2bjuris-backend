@@ -2,6 +2,7 @@ node_modules
 .vscode
 yarn-error.log
 .env
+.env-copy
 uploads/
 __tests__/coverage
 __tests__/db.sqlite

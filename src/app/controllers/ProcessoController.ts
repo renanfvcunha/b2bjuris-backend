@@ -74,7 +74,7 @@ class ProcessoController {
         const processos = processosQuery.map(processo => ({
           ...processo,
           finalizado: processo.finalizado ? 'Sim' : 'Não',
-          status: processo.status?.status || null
+          status: processo.status?.status || 'Sem Status'
         }))
 
         return res.json({ processos, total, page: Number(page) })
@@ -350,8 +350,10 @@ class ProcessoController {
       })
 
       const processo = new Processo()
-      if (status) {
+      if (status !== '0') {
         processo.status = { id: Number(status) }
+      } else {
+        processo.status = null
       }
 
       await getRepository(Processo)

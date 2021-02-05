@@ -23,7 +23,7 @@ export class Judicial {
   })
   polo_passivo?: string
 
-  @Column('double')
+  @Column('real')
   valor_causa?: number
 
   @ManyToOne(() => TipoAcao, tipo_acao => tipo_acao.judicial, {

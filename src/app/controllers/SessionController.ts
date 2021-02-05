@@ -16,6 +16,7 @@ class SessionController {
       const usuario = await getRepository(Usuario)
         .createQueryBuilder('user')
         .where('nome_usuario = :nome_usuario', { nome_usuario })
+        .orWhere('email = :nome_usuario', { nome_usuario })
         .getOne()
 
       // Verificando se usuário não existe
