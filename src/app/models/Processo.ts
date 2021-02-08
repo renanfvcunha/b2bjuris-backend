@@ -48,8 +48,8 @@ export class Processo {
   })
   status?: Status | null
 
-  @Column({ unique: true })
-  numero_processo?: number
+  @Column({ unique: true, length: 50 })
+  numero_processo?: string
 
   @Column({
     length: 191,
