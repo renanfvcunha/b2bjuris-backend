@@ -181,9 +181,32 @@ class UsuarioController {
     }
   }
 
+  public async show (req: Request, res: Response) {
+    const { id } = req.params
+
+    try {
+      const user = await getRepository(Usuario).findOne(id, {
+        select: ['id', 'nome', 'nome_usuario', 'email', 'tipo_usuario']
+      })
+
+      return res.json(user)
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
   public async update (req: Request, res: Response) {
     const { id } = req.params
-    const { nome, nome_usuario, tipo_usuario, senha }: IUsuario = req.body
+    const {
+      nome,
+      nome_usuario,
+      email,
+      tipo_usuario,
+      senha
+    }: IUsuario = req.body
 
     try {
       // Verificando se não há usuário com mesmo username
@@ -208,6 +231,7 @@ class UsuarioController {
       const usuario = new Usuario()
       usuario.nome = nome
       usuario.nome_usuario = nome_usuario
+      usuario.email = email
       usuario.tipo_usuario = tipo_usuario
       if (senha) {
         // Criptografando senha do usuário
@@ -229,6 +253,19 @@ class UsuarioController {
 
   public async destroy (req: Request, res: Response) {
     const { id } = req.params
+
+    // Verificando se há mais de 1 admin cadastrado
+    const admins = await getRepository(Usuario).find({
+      where: {
+        tipo_usuario: 'admin'
+      }
+    })
+
+    if (admins.length < 2) {
+      return res.status(400).json({
+        msg: 'É necessário que pelo menos 1 administrador esteja cadastrado.'
+      })
+    }
 
     try {
       await getRepository(Usuario).delete(id)

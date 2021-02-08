@@ -70,6 +70,7 @@ routes.get('/tiposencaminhamento', TipoEncaminhamentoController.index)
 routes.use(isAdminMiddleware)
 
 routes.get('/usuarios', UsuarioController.index)
+routes.get('/usuarios/:id', UsuarioController.show)
 routes.post('/usuarios', UsuarioValidator.store, UsuarioController.store)
 routes.put('/usuarios/:id', UsuarioValidator.update, UsuarioController.update)
 routes.delete('/usuarios/:id', UsuarioController.destroy)
