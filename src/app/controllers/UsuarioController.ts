@@ -181,6 +181,52 @@ class UsuarioController {
     }
   }
 
+  public async update (req: Request, res: Response) {
+    const { id } = req.params
+    const { nome, nome_usuario, tipo_usuario, senha }: IUsuario = req.body
+
+    try {
+      // Verificando se não há usuário com mesmo username
+      const usernameQuery = await getRepository(Usuario).findOne({
+        select: ['nome_usuario'],
+        where: { nome_usuario }
+      })
+      const userQuery = await getRepository(Usuario).findOne({
+        select: ['nome_usuario'],
+        where: { id }
+      })
+
+      if (
+        usernameQuery &&
+        usernameQuery.nome_usuario !== userQuery?.nome_usuario
+      ) {
+        return res
+          .status(400)
+          .json({ msg: 'Já existe um usuário com este nome de usuário.' })
+      }
+
+      const usuario = new Usuario()
+      usuario.nome = nome
+      usuario.nome_usuario = nome_usuario
+      usuario.tipo_usuario = tipo_usuario
+      if (senha) {
+        // Criptografando senha do usuário
+        const hash = await bcrypt.hash(senha, 8)
+
+        usuario.senha = hash
+      }
+
+      await getRepository(Usuario).update(id, usuario)
+
+      return res.json({ msg: 'Usuário editado com sucesso!' })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
   public async destroy (req: Request, res: Response) {
     const { id } = req.params
 
