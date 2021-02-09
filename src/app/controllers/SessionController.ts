@@ -19,16 +19,11 @@ class SessionController {
         .orWhere('email = :nome_usuario', { nome_usuario })
         .getOne()
 
-      // Verificando se usuário não existe
-      if (!usuario) {
-        return res.status(404).json({ msg: 'Usuário não encontrado!' })
-      }
+      const senhaUsuario = await bcrypt.compare(senha, usuario?.senha || '')
 
-      // Verificando se a senha está incorreta
-      const senhaUsuario = await bcrypt.compare(senha, usuario.senha || '')
-
-      if (!senhaUsuario) {
-        return res.status(401).json({ msg: 'Senha incorreta!' })
+      // Verificando usuário e senha
+      if (!usuario || !senhaUsuario) {
+        return res.status(401).json({ msg: 'Usuário e/ou senha incorretos!' })
       }
 
       const { id, nome, tipo_usuario } = usuario

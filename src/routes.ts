@@ -18,12 +18,14 @@ import EncaminhamentoController from './app/controllers/EncaminhamentoController
 import TipoEncaminhamentoController from './app/controllers/TipoEncaminhamentoController'
 
 import checkHasUser from './app/utils/checkHasUser'
+import checkToken from './app/utils/checkToken'
 
 const routes = Router()
 
 routes.get('/', (req, res) => res.json({ msg: 'B2B Juris API' }))
 
 routes.get('/checkhasuser', checkHasUser)
+routes.get('/checktoken', checkToken)
 
 routes.post('/session', SessionController.store)
 routes.post(
