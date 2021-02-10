@@ -328,7 +328,7 @@ class ProcessoController {
       /** Verificando se usuário que está editando o processo é o mesmo para
        * qual o processo foi encaminhado.
        */
-      const verifyEnc = await getRepository(Processo)
+      const verifyUser = await getRepository(Processo)
         .createQueryBuilder('processo')
         .select(['processo.id', 'encaminhamento.id'])
         .leftJoin('processo.encaminhamento', 'encaminhamento')
@@ -337,7 +337,7 @@ class ProcessoController {
         .andWhere('encaminhamento_usuario.id = :userId', { userId })
         .getOne()
 
-      if (!verifyEnc) {
+      if (!verifyUser) {
         return res.status(403).json({
           msg:
             'Não é possível alterar um processo que não foi encaminhado para você.'
@@ -409,8 +409,9 @@ class ProcessoController {
     }
   }
 
-  public async update (req: Request, res: Response) {
+  public async update (req: UserRequest, res: Response) {
     const { id } = req.params
+    const userId = req.userId
     const {
       status,
       finalizado
@@ -427,6 +428,25 @@ class ProcessoController {
       }
 
       if (finalizado) {
+        /** Verificando se usuário que está editando o processo é o mesmo para
+         * qual o processo foi encaminhado.
+         */
+        const verifyUser = await getRepository(Processo)
+          .createQueryBuilder('processo')
+          .select(['processo.id', 'encaminhamento.id'])
+          .leftJoin('processo.encaminhamento', 'encaminhamento')
+          .leftJoin('encaminhamento.usuario', 'encaminhamento_usuario')
+          .where('processo.id = :id', { id })
+          .andWhere('encaminhamento_usuario.id = :userId', { userId })
+          .getOne()
+
+        if (!verifyUser) {
+          return res.status(403).json({
+            msg:
+              'Não é possível finalizar um processo que não foi encaminhado para você.'
+          })
+        }
+
         processo.finalizado = true
         await getRepository(Processo).update(id, processo)
 
