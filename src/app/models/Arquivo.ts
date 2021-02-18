@@ -46,6 +46,4 @@ export class Arquivo {
 
   @UpdateDateColumn()
   updated_at?: Date
-
-  url?: string
 }

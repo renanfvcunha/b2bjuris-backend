@@ -1,4 +1,6 @@
-import { Router } from 'express'
+import express, { Router } from 'express'
+import { resolve } from 'path'
+
 import uploadDocs from './config/uploadDocs'
 
 import UsuarioValidator from './app/validators/UsuarioValidator'
@@ -36,6 +38,8 @@ routes.post(
 
 /** Rotas acessíveis para usuários autenticados */
 routes.use(authMiddleware)
+
+routes.use('/docs', express.static(resolve(__dirname, 'uploads', 'docs')))
 
 routes.get('/secretarias', SecretariaController.index)
 

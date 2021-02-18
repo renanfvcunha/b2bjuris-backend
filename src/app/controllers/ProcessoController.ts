@@ -173,8 +173,7 @@ class ProcessoController {
       if (processoQuery) {
         if (processo.arquivo) {
           const novoArquivo = processo.arquivo.map(arquivo => ({
-            ...arquivo,
-            url: `${process.env.APP_URL}/docs/${arquivo.nome}`
+            ...arquivo
           }))
 
           processo.arquivo = novoArquivo
