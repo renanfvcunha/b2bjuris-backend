@@ -127,6 +127,7 @@ class ProcessoController {
           'processo.numero_processo',
           'processo.nome_parte',
           'processo.tipo_processo',
+          'processo.finalizado',
           'observacoes.id',
           'observacoes.observacoes',
           'observacoes_usuario.nome',
@@ -420,9 +421,37 @@ class ProcessoController {
     try {
       const processo = new Processo()
 
+      /** Buscando procurador que está editando o processo */
+      const procurador = await getRepository(Usuario).findOne({
+        where: { id: userId }
+      })
+
       if (status) {
+        /** Verificando se processo já está finalizado */
+        const finished = await getRepository(Processo).findOne({
+          where: {
+            id,
+            finalizado: true
+          }
+        })
+
+        if (finished) {
+          return res
+            .status(400)
+            .json({ msg: 'Não é possível alterar um processo finalizado.' })
+        }
+
         processo.status = { id: Number(status) }
-        await getRepository(Processo).update(id, processo)
+        await getRepository(Processo)
+          .update(id, processo)
+          .then(async () => {
+            const hist = new Historico()
+            hist.processo = { id: Number(id) }
+            hist.descricao = `Alteração de status pelo(a) procurador(a) ${procurador?.nome}`
+            hist.usuario = procurador
+
+            await getRepository(Historico).save(hist)
+          })
 
         return res.json({ msg: 'Status alterado com sucesso!' })
       }
@@ -448,7 +477,16 @@ class ProcessoController {
         }
 
         processo.finalizado = true
-        await getRepository(Processo).update(id, processo)
+        await getRepository(Processo)
+          .update(id, processo)
+          .then(async () => {
+            const hist = new Historico()
+            hist.processo = { id: Number(id) }
+            hist.descricao = `Processo finalizado pelo(a) procurador(a) ${procurador?.nome}`
+            hist.usuario = procurador
+
+            await getRepository(Historico).save(hist)
+          })
 
         return res.json({ msg: 'Processo finalizado com sucesso!' })
       }

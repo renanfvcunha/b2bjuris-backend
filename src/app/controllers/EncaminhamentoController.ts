@@ -157,6 +157,20 @@ class EncaminhamentoController {
       enc.prazo = new Date(prazo)
       enc.observacoes = observacoes
 
+      /** Verificando se processo já está finalizado */
+      const finished = await getRepository(Processo).findOne({
+        where: {
+          id,
+          finalizado: true
+        }
+      })
+
+      if (finished) {
+        return res
+          .status(400)
+          .json({ msg: 'Não é possível encaminhar um processo finalizado.' })
+      }
+
       /** Verificando se o processo já foi encaminhado para o usuário */
       const encaminhamento = await getRepository(Encaminhamento)
         .createQueryBuilder('encaminhamento')
