@@ -31,8 +31,7 @@ export default async (req: UserRequest, res: Response, next: NextFunction) => {
 
     if (decoded && decoded.id) {
       req.userId = decoded.id
+      next()
     }
   })
-
-  return next()
 }

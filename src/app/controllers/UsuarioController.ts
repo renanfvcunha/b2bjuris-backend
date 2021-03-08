@@ -106,6 +106,20 @@ class UsuarioController {
     }: IUsuario = req.body
 
     try {
+      // Verificando se tipo de usuário é válido
+      const tipos_usuario = [
+        'admin',
+        'usuario',
+        'procurador',
+        'procurador_geral'
+      ]
+
+      const tipoValido = tipos_usuario.find(tipo => tipo_usuario === tipo)
+
+      if (!tipoValido) {
+        return res.status(400).json({ msg: 'Tipo de usuário inválido!' })
+      }
+
       // Verificando se não há usuário com mesmo username
       const usernameQuery = await getRepository(Usuario).findOne({
         select: ['nome_usuario'],
@@ -209,6 +223,20 @@ class UsuarioController {
     }: IUsuario = req.body
 
     try {
+      // Verificando se tipo de usuário é válido
+      const tipos_usuario = [
+        'admin',
+        'usuario',
+        'procurador',
+        'procurador_geral'
+      ]
+
+      const tipoValido = tipos_usuario.find(tipo => tipo_usuario === tipo)
+
+      if (!tipoValido) {
+        return res.status(400).json({ msg: 'Tipo de usuário inválido!' })
+      }
+
       // Verificando se não há usuário com mesmo username
       const usernameQuery = await getRepository(Usuario).findOne({
         select: ['nome_usuario'],

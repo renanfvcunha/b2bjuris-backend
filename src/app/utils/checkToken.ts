@@ -27,7 +27,7 @@ export default (req: UserRequest, res: Response) => {
           .json({ msg: 'Token Expirado! Faça login novamente.' })
       }
     }
-  })
 
-  return res.json({ msg: 'Ok' })
+    return res.json({ msg: 'Ok' })
+  })
 }
