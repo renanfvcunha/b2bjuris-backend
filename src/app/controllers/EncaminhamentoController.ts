@@ -199,7 +199,8 @@ class EncaminhamentoController {
           const historico = new Historico()
           historico.processo = enc.processo
           historico.usuario = { id: userId }
-          historico.descricao = `Processo encaminhado para o(a) procurador(a) ${procName?.nome}`
+          historico.descricao = `Processo encaminhado para o(a) procurador(a)
+          ${procName?.nome}`
 
           await getRepository(Historico)
             .save(historico)

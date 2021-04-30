@@ -42,12 +42,15 @@ routes.use(authMiddleware)
 routes.use('/docs', express.static(resolve(__dirname, 'uploads', 'docs')))
 
 routes.get('/secretarias', SecretariaController.index)
+routes.post('/secretarias', SecretariaController.store)
 
 routes.get('/assuntos', AssuntoController.index)
 
 routes.get('/tiposdeacao', TipoAcaoController.index)
+routes.post('/tiposdeacao', TipoAcaoController.store)
 
 routes.get('/status', StatusController.index)
+routes.post('/status', StatusController.store)
 
 routes.get('/processos', ProcessoController.index)
 routes.get('/processos/:id', ProcessoController.show)
