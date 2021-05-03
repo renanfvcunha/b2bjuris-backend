@@ -7,6 +7,10 @@ import IUsuario from '../interfaces/IUsuario'
 import { Usuario } from '../models/Usuario'
 import authConfig from '../../config/auth'
 
+interface UserRequest extends Request {
+  userId?: number
+}
+
 class UsuarioController {
   public async index (req: Request, res: Response) {
     const { per_page, page, search } = req.query
@@ -303,6 +307,48 @@ class UsuarioController {
       console.log(err)
       return res.status(500).json({
         msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
+  public async me (req: UserRequest, res: Response) {
+    const id = req.userId
+
+    try {
+      const user = await getRepository(Usuario).findOne(id, {
+        select: ['id', 'senha']
+      })
+      return res.json(user)
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        msg: 'Erro interno do servidor. Tente novamente ou contate o suporte.'
+      })
+    }
+  }
+
+  public async updatePassword (req: UserRequest, res: Response) {
+    const id = req.userId
+
+    const { senha }: IUsuario = req.body
+
+    try {
+      if (id) {
+        const usuario = new Usuario()
+        usuario.senha = senha
+
+        if (senha) {
+          const hash = await bcrypt.hash(senha, 8)
+          usuario.senha = hash
+        }
+
+        await getRepository(Usuario).update(id, usuario)
+
+        return res.json({ msg: 'Senha alterada com sucesso!' })
+      }
+    } catch (err) {
+      return res.status(401).json({
+        msg: 'Ops, as senhas são diferentes!'
       })
     }
   }

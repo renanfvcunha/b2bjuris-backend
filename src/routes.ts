@@ -75,6 +75,14 @@ routes.get('/procuradores', UsuarioController.getProcuradores)
 
 routes.get('/tiposencaminhamento', TipoEncaminhamentoController.index)
 
+/** Rotas acessíveis para troca de senha dos usuário não administradores */
+routes.get('/usuarios/:id', UsuarioController.me)
+routes.put(
+  '/usuarios/:id',
+  UsuarioValidator.updatePassword,
+  UsuarioController.updatePassword
+)
+
 /** Rotas acessíveis para administradores */
 routes.use(isAdminMiddleware)
 
@@ -82,6 +90,7 @@ routes.get('/usuarios', UsuarioController.index)
 routes.get('/usuarios/:id', UsuarioController.show)
 routes.post('/usuarios', UsuarioValidator.store, UsuarioController.store)
 routes.put('/usuarios/:id', UsuarioValidator.update, UsuarioController.update)
+
 routes.delete('/usuarios/:id', UsuarioController.destroy)
 
 routes.post('/assuntos', AssuntoController.store)

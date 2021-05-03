@@ -104,6 +104,30 @@ class UsuarioValidator {
 
     return next()
   }
+
+  public async updatePassword (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { senha, conf_senha }: IUsuario = req.body
+
+    // Verificando se os campos obrigatórios estão preenchidos
+    if (!senha || !conf_senha) {
+      return res.status(400).json({
+        msg: 'Ops, preencha todos os campos!'
+      })
+    }
+
+    // Verificando se a senha será alterada e, caso sim, se coincidem.
+    if (senha || conf_senha) {
+      if (senha !== conf_senha) {
+        return res.status(400).json({ msg: 'Ops, as senhas não coincidem!' })
+      }
+    }
+
+    return next()
+  }
 }
 
 export default new UsuarioValidator()
