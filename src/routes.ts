@@ -76,9 +76,9 @@ routes.get('/procuradores', UsuarioController.getProcuradores)
 routes.get('/tiposencaminhamento', TipoEncaminhamentoController.index)
 
 /** Rotas acessíveis para troca de senha dos usuário não administradores */
-routes.get('/usuarios/:id', UsuarioController.me)
+routes.get('/usuarios/me', UsuarioController.me)
 routes.put(
-  '/usuarios/:id',
+  '/usuarios/me/updatepasswd',
   UsuarioValidator.updatePassword,
   UsuarioController.updatePassword
 )
