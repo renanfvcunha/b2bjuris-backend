@@ -10,7 +10,9 @@
     "dev": "ts-node-dev --ignore-watch node_modules src/server.ts",
     "start": "ts-node src/server.ts",
     "build": "tsc -p .",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "seed:dev": "ts-node node_modules/typeorm/cli.js migration:run",
+    "seed:prod": "typeorm migration:run"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
